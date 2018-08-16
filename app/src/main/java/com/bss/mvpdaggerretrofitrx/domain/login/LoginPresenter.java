@@ -5,9 +5,8 @@ import com.bss.mvpdaggerretrofitrx.service.model.LoginRequest;
 import com.bss.mvpdaggerretrofitrx.service.model.LoginResponse;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+import javax.inject.Inject;
+
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
@@ -15,15 +14,12 @@ import rx.schedulers.Schedulers;
 
 public class LoginPresenter extends MvpBasePresenter<LoginView> {
 
-    private RestAuthenticationService restAuthenticationService;
+    @Inject
+    protected RestAuthenticationService restAuthenticationService;
 
+    @Inject
     public LoginPresenter() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://kiddi.api.web.beesightsoft.com/api/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        restAuthenticationService = retrofit.create(RestAuthenticationService.class);
+
     }
 
     public void login(String email, String password) {
