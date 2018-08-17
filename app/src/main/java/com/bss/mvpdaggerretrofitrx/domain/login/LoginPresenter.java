@@ -20,8 +20,8 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {               
     public LoginPresenter() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://kiddi.api.web.beesightsoft.com/api/")
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())   // kêt hợp với rx
+                .addConverterFactory(GsonConverterFactory.create())           //convert json bằng gson
                 .build();
         restAuthenticationService = retrofit.create(RestAuthenticationService.class);       //khởi tại retrofit để add vào abservable      //retrofit để đọc dữ liệu từ netwwork  kiểu Json thì có Gson để parse
     }                                                                               // cũng như httpConnecttion add vào async task  //  observable để chạy cái retrofit trên 1 luồng riêng.
@@ -29,7 +29,7 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {               
     public void login(String email, String password) {                   // xử lý logic đăng nhập
         getView().showLoading();
         restAuthenticationService.login(new LoginRequest(email, password))       //kết hợp giữa retrofit và observable
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.io())                                          //gửi ecmail mà pass đi,,nêu có trong api nó sẽ trả về cái respone ko có nó sẽ báo lỗi
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(new Action0() {                       //chạy xong cái observable là zô đây
                     @Override
@@ -39,7 +39,7 @@ public class LoginPresenter extends MvpBasePresenter<LoginView> {               
                 })
                 .subscribe(new Action1<LoginResponse>() {
                     @Override
-                    public void call(LoginResponse loginResponse) {
+                    public void call(LoginResponse loginResponse) {      // cái observable gửi item đi
                         getView().loginSuccessful(loginResponse);
                     }
                 }, new Action1<Throwable>() {
