@@ -4,22 +4,37 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.bss.mvpdaggerretrofitrx.R;
+import com.bss.mvpdaggerretrofitrx.factory.DaggerApplicationComponent;
 import com.bss.mvpdaggerretrofitrx.service.model.LoginResponse;
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 
+import org.androidannotations.annotations.AfterInject;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+
+import javax.inject.Inject;
 
 @EActivity(R.layout.activity_main)
 public class LoginActivity extends MvpActivity<LoginView, LoginPresenter>            //3
 implements LoginView {
 
+    @Inject
+    protected LoginPresenter presenter;
+
     @NonNull
     @Override
     public LoginPresenter createPresenter() {
-        return new LoginPresenter();
+        return presenter;
     }
+
+    @AfterInject
+    protected void afterInject() {
+        DaggerApplicationComponent.builder()
+                .build()
+                .inject(this);
+    }
+
 
     @AfterViews
     protected void initView() {
